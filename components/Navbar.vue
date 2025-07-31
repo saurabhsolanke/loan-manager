@@ -55,7 +55,7 @@ const mobileMenuOpen = ref(false)
           </button>
         </div>
       </div>
-      <img class="img-fluid" src="https://lh5.googleusercontent.com/jSWa0Q3Gt2IkoyZggxihlTHaG3HN14aF1rmmUz8_KlBI88eW0kEqg0BFrqOm5Knx5t48fRWM9LeRlI92QM2QewzNHUI-YrROFfR-AQGsBvK0831yBg19V-23ZdzjvM6IVep3InO_sudfQezUj_aNCFdBf8F54MI6V8BZiKCt4as_ffZs4RQosg=w1280" alt="Logo" />
+      <img class="img-fluid" src="../assets/logooo.jpeg" alt="Logo" />
 
       <!-- Mobile menu -->
       <div v-if="mobileMenuOpen" class="md:hidden">
