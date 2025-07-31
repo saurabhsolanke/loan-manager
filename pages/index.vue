@@ -12,7 +12,7 @@
 onMounted(() => {
   const isLoggedIn = localStorage.getItem('isLoggedIn')
   if (isLoggedIn === 'true') {
-    navigateTo('/dashboard')
+    navigateTo('/supaloan')
   } else {
     navigateTo('/login')
   }

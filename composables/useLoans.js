@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { supabase } from '~/utils/supabase'
+import { getSupabaseClient } from '~/utils/supabase'
 
 export const useLoans = () => {
   const loans = ref([])
@@ -11,6 +11,7 @@ export const useLoans = () => {
 
     try {
       console.log('Fetching loans from Supabase...')
+      const supabase = getSupabaseClient()
       console.log('Supabase URL:', supabase.supabaseUrl)
       
       // First, test the connection
@@ -60,6 +61,7 @@ export const useLoans = () => {
 
   const addLoan = async (loanData) => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('loanable')
         .insert([loanData])
@@ -79,6 +81,7 @@ export const useLoans = () => {
 
   const updateLoan = async (accountNo, updates) => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('loanable')
         .update(updates)
@@ -102,6 +105,7 @@ export const useLoans = () => {
 
   const deleteLoan = async (accountNo) => {
     try {
+      const supabase = getSupabaseClient()
       const { error } = await supabase
         .from('loanable')
         .delete()
@@ -119,6 +123,7 @@ export const useLoans = () => {
 
   const getLoanById = async (accountNo) => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('loanable')
         .select('*')
@@ -141,6 +146,7 @@ export const useLoans = () => {
     try {
       console.log('Searching loans with filters:', { searchTerm, filters })
       
+      const supabase = getSupabaseClient()
       let query = supabase
         .from('loanable')
         .select('*')
@@ -201,6 +207,7 @@ export const useLoans = () => {
 
   const getLoanTypes = async () => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('loanable')
         .select('LoanType')
@@ -218,6 +225,7 @@ export const useLoans = () => {
 
   const getBranches = async () => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('loanable')
         .select('BranchName')
@@ -251,6 +259,7 @@ export const useLoans = () => {
       // Check if search value is numeric (for AccountNO search)
       const isNumeric = /^\d+$/.test(searchValue)
       
+      const supabase = getSupabaseClient()
       let query = supabase.from('loanable').select('*')
       
       if (isNumeric) {

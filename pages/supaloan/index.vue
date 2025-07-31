@@ -14,6 +14,7 @@ const loanTypes = ref([])
 const branches = ref([])
 const searchLoading = ref(false)
 const searchTimeout = ref(null)
+const showMobileFilters = ref(false)
 
 // Computed properties
 const totalLoanAmount = computed(() => {
@@ -144,12 +145,13 @@ onMounted(async () => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
+    <Navbar />
     <!-- Header -->
     <div class="bg-white shadow-sm border-b">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-6">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">Supaloan Dashboard</h1>
+            <h1 class="text-3xl font-bold text-gray-900">Loan Dashboard</h1>
             <p class="text-gray-600 mt-1">Manage and view loan data from Supabase</p>
           </div>
           <div class="flex items-center space-x-4">
@@ -191,22 +193,81 @@ onMounted(async () => {
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" clip-rule="evenodd" />
               </svg>
             </div>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium" :class="connectionStatus === 'error' ? 'text-red-800' : connectionStatus === 'warning' ? 'text-yellow-800' : 'text-green-800'">
-              {{ connectionStatus === 'error' ? 'Supabase Connection Error' : connectionStatus === 'warning' ? 'Using Sample Data' : 'Connected to Supabase' }}
-            </h3>
-            <div class="mt-1 text-sm" :class="connectionStatus === 'error' ? 'text-red-700' : connectionStatus === 'warning' ? 'text-yellow-700' : 'text-green-700'">
-              {{ connectionStatus === 'error' ? 'Unable to connect to Supabase.' : connectionStatus === 'warning' ? 'No data found in Supabase.' : 'Successfully loaded data from Supabase.' }}
-            </div>
-          </div>
+         
         </div>
       </div>
     </div>
 
     <!-- Filters and Search -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      <div class="bg-white rounded-lg shadow p-4 sm:p-6 mb-4 sm:mb-6">
+        <!-- Mobile Filter Toggle -->
+        <div class="md:hidden mb-4">
+          <button
+            @click="showMobileFilters = !showMobileFilters"
+            class="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <span>Filters & Search</span>
+            <svg class="h-5 w-5 text-gray-400" :class="{ 'rotate-180': showMobileFilters }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Desktop Filters -->
+        <div class="hidden md:grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- Search -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+            <input
+              v-model="searchTerm"
+              type="text"
+              placeholder="Search by name or account number..."
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <!-- Loan Type Filter -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Loan Type</label>
+            <select
+              v-model="selectedLoanType"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">All Types</option>
+              <option v-for="type in loanTypes" :key="type" :value="type">{{ type }}</option>
+            </select>
+          </div>
+
+          <!-- Branch Filter -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Branch</label>
+            <select
+              v-model="selectedBranch"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">All Branches</option>
+              <option v-for="branch in branches" :key="branch" :value="branch">{{ branch }}</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <select
+              v-model="selectedStatus"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="overdue">Overdue</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mobile Filters (Collapsible) -->
+        <div v-if="showMobileFilters" class="md:hidden space-y-4">
           <!-- Search -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
@@ -270,73 +331,81 @@ onMounted(async () => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+                <div class="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center">
+                  <svg class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
               </div>
-              <div class="ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
                   <dt class="text-sm font-medium text-gray-500 truncate">Total Loans</dt>
-                  <dd class="text-lg font-medium text-gray-900">{{ loans.length }}</dd>
+                  <dd class="text-2xl font-bold text-gray-900">{{ loans.length }}</dd>
                 </dl>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
+                <div class="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
+                  <svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
               </div>
-              <div class="ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
                   <dt class="text-sm font-medium text-gray-500 truncate">Total Amount</dt>
-                  <dd class="text-lg font-medium text-gray-900">₹{{ formatCurrency(totalLoanAmount) }}</dd>
+                  <dd class="text-2xl font-bold text-gray-900">₹{{ formatCurrency(totalLoanAmount) }}</dd>
                 </dl>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
+                <div class="w-8 h-8 bg-red-100 rounded-md flex items-center justify-center">
+                  <svg class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
               </div>
-              <div class="ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
                   <dt class="text-sm font-medium text-gray-500 truncate">Overdue Amount</dt>
-                  <dd class="text-lg font-medium text-red-600">₹{{ formatCurrency(totalOverdueAmount) }}</dd>
+                  <dd class="text-2xl font-bold text-red-600">₹{{ formatCurrency(totalOverdueAmount) }}</dd>
                 </dl>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+                <div class="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
+                  <svg class="h-5 w-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
               </div>
-              <div class="ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
-                  <dt class="text-sm font-medium text-gray-500 truncate">Unique Borrowers</dt>
-                  <dd class="text-lg font-medium text-gray-900">{{ uniqueBorrowers }}</dd>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Active Borrowers</dt>
+                  <dd class="text-2xl font-bold text-gray-900">{{ uniqueBorrowers }}</dd>
                 </dl>
               </div>
             </div>
@@ -379,44 +448,104 @@ onMounted(async () => {
           <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filters.</p>
         </div>
 
-        <ul v-else class="divide-y divide-gray-200">
-          <li v-for="loan in loans" :key="loan.AccountNO" class="px-4 py-4 sm:px-6 hover:bg-gray-50">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-10">
-                  <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span class="text-sm font-medium text-blue-600">{{ loan.BorrowerName?.charAt(0) || 'N' }}</span>
+        <!-- Desktop Table -->
+        <div class="hidden md:block">
+          <ul class="divide-y divide-gray-200">
+            <li v-for="loan in loans" :key="loan.AccountNO" class="px-4 py-4 sm:px-6 hover:bg-gray-50">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span class="text-sm font-medium text-blue-600">{{ loan.BorrowerName?.charAt(0) || 'N' }}</span>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">{{ loan.BorrowerName }}</div>
+                    <div class="text-sm text-gray-500">Account: {{ loan.AccountNO }}</div>
+                    <NuxtLink 
+                      :to="`/supaloan/${loan.AccountNO}`"
+                      class="text-xs text-blue-600 hover:text-blue-800 mt-1 inline-block"
+                    >
+                      View Details →
+                    </NuxtLink>
                   </div>
                 </div>
-                <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900">{{ loan.BorrowerName }}</div>
-                  <div class="text-sm text-gray-500">Account: {{ loan.AccountNO }}</div>
-                  <NuxtLink 
-                    :to="`/supaloan/${loan.AccountNO}`"
-                    class="text-xs text-blue-600 hover:text-blue-800 mt-1 inline-block"
-                  >
-                    View Details →
-                  </NuxtLink>
+                <div class="flex items-center space-x-4">
+                  <div class="text-right">
+                    <div class="text-sm font-medium text-gray-900">₹{{ formatCurrency(loan['Loan Amount']) }}</div>
+                    <div class="text-sm text-gray-500">{{ loan.LoanType }}</div>
+                  </div>
+                  <div class="flex items-center">
+                    <span :class="getStatusClass(loan)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                      {{ getStatusText(loan) }}
+                    </span>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm text-gray-900">₹{{ formatCurrency(loan['Closing Balance']) }}</div>
+                    <div class="text-sm text-gray-500">{{ loan.BranchName }}</div>
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center space-x-4">
-                <div class="text-right">
-                  <div class="text-sm font-medium text-gray-900">₹{{ formatCurrency(loan['Loan Amount']) }}</div>
-                  <div class="text-sm text-gray-500">{{ loan.LoanType }}</div>
-                </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="md:hidden">
+          <div class="space-y-3">
+            <div v-for="loan in loans" :key="loan.AccountNO" class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div class="flex items-start justify-between mb-3">
                 <div class="flex items-center">
-                  <span :class="getStatusClass(loan)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
-                    {{ getStatusText(loan) }}
-                  </span>
+                  <div class="flex-shrink-0 h-12 w-12">
+                    <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span class="text-sm font-medium text-blue-600">{{ loan.BorrowerName?.charAt(0) || 'N' }}</span>
+                    </div>
+                  </div>
+                  <div class="ml-3">
+                    <div class="text-sm font-medium text-gray-900">{{ loan.BorrowerName }}</div>
+                    <div class="text-xs text-gray-500">Account: {{ loan.AccountNO }}</div>
+                  </div>
                 </div>
-                <div class="text-right">
-                  <div class="text-sm text-gray-900">₹{{ formatCurrency(loan['Closing Balance']) }}</div>
-                  <div class="text-sm text-gray-500">{{ loan.BranchName }}</div>
+                <span :class="getStatusClass(loan)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                  {{ getStatusText(loan) }}
+                </span>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4 mb-3">
+                <div>
+                  <div class="text-xs text-gray-500">Loan Amount</div>
+                  <div class="text-sm font-medium text-gray-900">₹{{ formatCurrency(loan['Loan Amount']) }}</div>
                 </div>
+                <div>
+                  <div class="text-xs text-gray-500">Balance</div>
+                  <div class="text-sm font-medium" :class="loan['Closing Balance'] < 0 ? 'text-red-600' : 'text-green-600'">
+                    ₹{{ formatCurrency(Math.abs(loan['Closing Balance'])) }}
+                  </div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">Loan Type</div>
+                  <div class="text-sm text-gray-900">{{ loan.LoanType }}</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">Branch</div>
+                  <div class="text-sm text-gray-900">{{ loan.BranchName }}</div>
+                </div>
+              </div>
+              
+              <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                <div class="text-xs text-gray-500">
+                  Overdue: ₹{{ formatCurrency(loan['Total Overdue Amount']) }}
+                </div>
+                <NuxtLink 
+                  :to="`/supaloan/${loan.AccountNO}`"
+                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  View Details
+                </NuxtLink>
               </div>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

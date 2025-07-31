@@ -11,6 +11,6 @@ export default defineNuxtRouteMiddleware((to) => {
   
   // If user is logged in and trying to access login page
   if (isLoggedIn && to.path === '/login') {
-    return navigateTo('/dashboard')
+    return navigateTo('/supaloan')
   }
 }) 

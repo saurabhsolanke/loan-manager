@@ -1,31 +1,23 @@
-import { createClient } from '@supabase/supabase-js'
+// Get Supabase client from Nuxt plugin
+export const getSupabaseClient = () => {
+  const { $supabase } = useNuxtApp()
+  return $supabase
+}
 
-const supabaseUrl = 'https://crgpcbsfhfqxvqlglblh.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZ3BjYnNmaGZxeHZxbGdsYmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4OTg0NDksImV4cCI6MjA2OTQ3NDQ0OX0._oIF0Pvp9T066b1ohBklrodwIHVWIPmteukt7bIDhRI'
-
-export const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  },
-  global: {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  },
-  db: {
-    schema: 'public'
-  }
-})
+// For backward compatibility, create a function that returns the client
+export const createSupabaseClient = () => {
+  return getSupabaseClient()
+}
 
 // Test connection function
 export const testSupabaseConnection = async () => {
   try {
     console.log('Testing Supabase connection...')
     
+    const client = getSupabaseClient()
+    
     // Test basic connection
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('loanable')
       .select('count')
       .limit(1)
