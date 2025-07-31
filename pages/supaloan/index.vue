@@ -36,7 +36,7 @@ const hasActiveFilters = computed(() => {
 // Methods
 const getStatusClass = (loan) => {
   if (loan['Total Overdue Amount'] > 0) return 'bg-red-100 text-red-800'
-  if (loan['Closing Balance'] < 0) return 'bg-yellow-100 text-yellow-800'
+  if (loan['Closing Balance'] < 0) return 'bg-blue-100 text-blue-800'
   return 'bg-green-100 text-green-800'
 }
 
@@ -147,7 +147,7 @@ onMounted(async () => {
   <div class="min-h-screen bg-gray-50">
     <Navbar />
     <!-- Header -->
-    <div class="bg-white shadow-sm border-b">
+    <div class="bg-white shadow-sm border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-6">
           <div>
@@ -158,7 +158,7 @@ onMounted(async () => {
             <button
               @click="refreshData"
               :disabled="loading"
-              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
             >
               <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -178,34 +178,14 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Connection Status -->
-    <div v-if="connectionStatus" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-      <div :class="connectionStatus === 'error' ? 'bg-red-50 border border-red-200' : connectionStatus === 'warning' ? 'bg-yellow-50 border border-yellow-200' : 'bg-green-50 border border-green-200'" class="rounded-md p-3">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg v-if="connectionStatus === 'error'" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-              </svg>
-              <svg v-else-if="connectionStatus === 'warning'" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-              </svg>
-              <svg v-else class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" clip-rule="evenodd" />
-              </svg>
-            </div>
-         
-        </div>
-      </div>
-    </div>
-
     <!-- Filters and Search -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-      <div class="bg-white rounded-lg shadow p-4 sm:p-6 mb-4 sm:mb-6">
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
         <!-- Mobile Filter Toggle -->
         <div class="md:hidden mb-4">
           <button
             @click="showMobileFilters = !showMobileFilters"
-            class="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            class="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             <span>Filters & Search</span>
             <svg class="h-5 w-5 text-gray-400" :class="{ 'rotate-180': showMobileFilters }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,7 +203,7 @@ onMounted(async () => {
               v-model="searchTerm"
               type="text"
               placeholder="Search by name or account number..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             />
           </div>
 
@@ -232,7 +212,7 @@ onMounted(async () => {
             <label class="block text-sm font-medium text-gray-700 mb-2">Loan Type</label>
             <select
               v-model="selectedLoanType"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             >
               <option value="">All Types</option>
               <option v-for="type in loanTypes" :key="type" :value="type">{{ type }}</option>
@@ -244,7 +224,7 @@ onMounted(async () => {
             <label class="block text-sm font-medium text-gray-700 mb-2">Branch</label>
             <select
               v-model="selectedBranch"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             >
               <option value="">All Branches</option>
               <option v-for="branch in branches" :key="branch" :value="branch">{{ branch }}</option>
@@ -256,7 +236,7 @@ onMounted(async () => {
             <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
             <select
               v-model="selectedStatus"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
@@ -275,7 +255,7 @@ onMounted(async () => {
               v-model="searchTerm"
               type="text"
               placeholder="Search by name or account number..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             />
           </div>
 
@@ -284,7 +264,7 @@ onMounted(async () => {
             <label class="block text-sm font-medium text-gray-700 mb-2">Loan Type</label>
             <select
               v-model="selectedLoanType"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             >
               <option value="">All Types</option>
               <option v-for="type in loanTypes" :key="type" :value="type">{{ type }}</option>
@@ -296,7 +276,7 @@ onMounted(async () => {
             <label class="block text-sm font-medium text-gray-700 mb-2">Branch</label>
             <select
               v-model="selectedBranch"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             >
               <option value="">All Branches</option>
               <option v-for="branch in branches" :key="branch" :value="branch">{{ branch }}</option>
@@ -308,7 +288,7 @@ onMounted(async () => {
             <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
             <select
               v-model="selectedStatus"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
@@ -323,7 +303,7 @@ onMounted(async () => {
           <button
             @click="clearFilters"
             :disabled="!hasActiveFilters"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
           >
             Clear Filters
           </button>
@@ -332,7 +312,7 @@ onMounted(async () => {
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
+        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -352,7 +332,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
+        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -372,7 +352,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
+        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -392,12 +372,12 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow">
+        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
           <div class="p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
-                  <svg class="h-5 w-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center">
+                  <svg class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
@@ -414,29 +394,29 @@ onMounted(async () => {
       </div>
 
       <!-- Error Message -->
-      <div v-if="error" class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+      <div v-if="error" class="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
         <div class="flex">
           <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
             </svg>
           </div>
           <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-800">Error loading data</h3>
-            <div class="mt-2 text-sm text-red-700">{{ error }}</div>
+            <h3 class="text-sm font-medium text-gray-800">Error loading data</h3>
+            <div class="mt-2 text-sm text-gray-700">{{ error }}</div>
           </div>
         </div>
       </div>
 
       <!-- Loans Table -->
-      <div class="bg-white shadow overflow-hidden sm:rounded-md">
+      <div class="bg-white shadow overflow-hidden sm:rounded-md border border-gray-200">
         <div class="px-4 py-5 sm:px-6">
           <h3 class="text-lg leading-6 font-medium text-gray-900">Loan Details</h3>
           <p class="mt-1 max-w-2xl text-sm text-gray-500">Showing {{ loans.length }} loans</p>
         </div>
         
         <div v-if="loading" class="flex justify-center items-center py-12">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
           <span class="ml-3 text-gray-600">Loading loans...</span>
         </div>
 
@@ -455,8 +435,8 @@ onMounted(async () => {
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <span class="text-sm font-medium text-blue-600">{{ loan.BorrowerName?.charAt(0) || 'N' }}</span>
+                    <div class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                      <span class="text-sm font-medium text-gray-600">{{ loan.BorrowerName?.charAt(0) || 'N' }}</span>
                     </div>
                   </div>
                   <div class="ml-4">
@@ -464,7 +444,7 @@ onMounted(async () => {
                     <div class="text-sm text-gray-500">Account: {{ loan.AccountNO }}</div>
                     <NuxtLink 
                       :to="`/supaloan/${loan.AccountNO}`"
-                      class="text-xs text-blue-600 hover:text-blue-800 mt-1 inline-block"
+                      class="text-xs text-gray-600 hover:text-gray-800 mt-1 inline-block"
                     >
                       View Details →
                     </NuxtLink>
@@ -497,8 +477,8 @@ onMounted(async () => {
               <div class="flex items-start justify-between mb-3">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-12 w-12">
-                    <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                      <span class="text-sm font-medium text-blue-600">{{ loan.BorrowerName?.charAt(0) || 'N' }}</span>
+                    <div class="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center">
+                      <span class="text-sm font-medium text-gray-600">{{ loan.BorrowerName?.charAt(0) || 'N' }}</span>
                     </div>
                   </div>
                   <div class="ml-3">
@@ -518,7 +498,7 @@ onMounted(async () => {
                 </div>
                 <div>
                   <div class="text-xs text-gray-500">Balance</div>
-                  <div class="text-sm font-medium" :class="loan['Closing Balance'] < 0 ? 'text-red-600' : 'text-green-600'">
+                  <div class="text-sm font-medium text-gray-700">
                     ₹{{ formatCurrency(Math.abs(loan['Closing Balance'])) }}
                   </div>
                 </div>
@@ -533,12 +513,12 @@ onMounted(async () => {
               </div>
               
               <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                <div class="text-xs text-gray-500">
+                <div class="text-xs text-red-600">
                   Overdue: ₹{{ formatCurrency(loan['Total Overdue Amount']) }}
                 </div>
                 <NuxtLink 
                   :to="`/supaloan/${loan.AccountNO}`"
-                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 >
                   View Details
                 </NuxtLink>
