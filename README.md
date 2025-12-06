@@ -25,7 +25,7 @@ The application uses the following loan data fields:
 | BranchName | Branch location |
 | LoanType | Type of loan (GOLD LOAN, HOME LOAN, Sthavar Taran) |
 | AccountNO | Unique account number |
-| BorrowerName | Name of the borrower |
+| CustomerName | Name of the borrower |
 | MobileNo | Contact number |
 | BorrowerAdd | Borrower's address |
 | OpenDate | Loan opening date |
@@ -139,7 +139,7 @@ The application expects Excel/CSV files with the following columns:
 | BranchName | Yes | Text | Branch location |
 | LoanType | Yes | Text | Type of loan |
 | AccountNO | Yes | Text | Unique account number |
-| BorrowerName | Yes | Text | Name of the borrower |
+| CustomerName | Yes | Text | Name of the borrower |
 | LoanAmount | Yes | Number | Original loan amount |
 | MobileNo | No | Text | Contact number |
 | BorrowerAdd | No | Text | Borrower's address |
